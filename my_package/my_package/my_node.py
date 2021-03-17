@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9a303fc19de5fb596ced76e4e8bc6a84fc3d2512
 import rclpy
 from rclpy.node import Node
 
