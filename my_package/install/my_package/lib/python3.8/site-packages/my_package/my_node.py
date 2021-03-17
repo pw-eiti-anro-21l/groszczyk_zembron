@@ -1,4 +1,3 @@
-
 import rclpy
 from rclpy.node import Node
 
@@ -8,10 +7,10 @@ import turtlesim
 
 
 
-class VelocityPublisher(Node):
+class MinimalPublisher3(Node):
 
     def __init__(self):
-        super().__init__('velocity_publisher')
+        super().__init__('minimal_publisher3')
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
         timer_period = 1.5  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
@@ -29,14 +28,14 @@ class VelocityPublisher(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    velocity_publisher = VelocityPublisher()
+    minimal_publisher3 = MinimalPublisher3()
 
-    rclpy.spin(velocity_publisher)
+    rclpy.spin(minimal_publisher3)
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
-    velocity_publisher.destroy_node()
+    minimal_publisher3.destroy_node()
     rclpy.shutdown()
 
 
