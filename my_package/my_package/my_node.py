@@ -1,12 +1,16 @@
+
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Twist
+from curtsies import Input
+
 class VelocityPublisher(Node):
 
     def __init__(self):
         super().__init__('velocity_publisher')
-<<<<<<< HEAD
-
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
         timer_period = 0.5  # seconds
-        
+
         self.timer = self.create_timer(timer_period, self.turtle_control)
 
         self.declare_parameter('forward', 'w')
@@ -33,7 +37,7 @@ class VelocityPublisher(Node):
     		#e=input_generator.send(0.1)
     		for e in Input():
     			e=str(e)
-	    		if(e==forward): 
+	    		if(e==forward):
 	    			print('do przodu')
 	    			self.set_velocity(1, 0)
 
@@ -54,31 +58,18 @@ class VelocityPublisher(Node):
 	    		msg.angular.z= self.angular
 	    		self.publisher_.publish(msg)
 
+        # self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
+        # timer_period = 1.5  # seconds
+        # self.timer = self.create_timer(timer_period, self.timer_callback)
 
 
+    # def timer_callback(self):
+    #     msg = Twist()
+    #     msg.linear.x = 1.0
+    #     msg.angular.z = 3.14
+    #     self.publisher_.publish(msg)
+    #     self.get_logger().info('Publishing: "%s"' % msg.linear.x)
 
-
-
-				
-
-
-...  
-=======
-        self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
-        timer_period = 1.5  # seconds
-        self.timer = self.create_timer(timer_period, self.timer_callback)
-
-
-    def timer_callback(self):
-        msg = Twist()
-        msg.linear.x = 1.0
-        msg.angular.z = 3.14
-        self.publisher_.publish(msg)
-        self.get_logger().info('Publishing: "%s"' % msg.linear.x)
-
-
-
->>>>>>> 91d1b066551f7b5fa0af881527da109fbde856f2
 def main(args=None):
     rclpy.init(args=args)
 
