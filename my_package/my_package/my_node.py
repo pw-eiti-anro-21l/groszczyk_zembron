@@ -23,7 +23,7 @@ class VelocityPublisher(Node):
         self.declare_parameter('left', 'a')
         self.declare_parameter('right', 'd')
 
-        self.get_logger().info("Walcome! \n Default settings: |  FORWARD: W  |  BACK: X  | LEFT:  A|  RIGHT:  D  |")
+        self.get_logger().info("Welcome! \n Default settings: |  FORWARD: W  |  BACK: X  | LEFT:  A|  RIGHT:  D  |")
 
         self.linear= 0.0
         self.angular= 0.0
