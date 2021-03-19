@@ -1,4 +1,3 @@
-
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -11,9 +10,9 @@ class VelocityPublisher(Node):
     def __init__(self):
         super().__init__('velocity_publisher')
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
-        timer_period = 0.5  # seconds
+        timer_period = 0.01  # seconds
 
-        time.sleep(0.1)
+        # time.sleep(0.1)
         self.timer = self.create_timer(timer_period, self.turtle_control)
 
         self.declare_parameter('forward', 'w')
@@ -35,34 +34,28 @@ class VelocityPublisher(Node):
     	left= self.get_parameter('left').get_parameter_value().string_value
     	right= self.get_parameter('right').get_parameter_value().string_value
 
-    	ang_const=pi/2
-    	lin_const=1
     	with Input(keynames='curtsies') as input_generator:
 
     		e=input_generator.send(0.01)
     		e=str(e)
     		self.set_velocity(0, 0)
     		if(e==forward):
-    			print('do przodu')
-    			self.set_velocity(lin_const, 0)
+    			self.set_velocity(3, 0)
 
     		elif(e==back):
-    			print('do tylu')
-    			self.set_velocity(-lin_const, 0)
+    			self.set_velocity(-3, 0)
 
     		elif(e==left):
-    			print('w lewo')
-    			self.set_velocity(0, ang_const)
+    			self.set_velocity(0, 3)
 
     		elif(e==right):
-    			print('w prawo')
-    			self.set_velocity(0, -ang_const)
+    			self.set_velocity(0, -3)
 
     		msg= Twist()
     		msg.linear.x= self.linear
     		msg.angular.z= self.angular
     		self.publisher_.publish(msg)
-	    	
+
 
 
 def main(args=None):
@@ -81,3 +74,4 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+
