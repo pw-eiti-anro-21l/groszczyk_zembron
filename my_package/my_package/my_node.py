@@ -10,7 +10,7 @@ class VelocityPublisher(Node):
     def __init__(self):
         super().__init__('velocity_publisher')
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
-        timer_period = 0.01  # seconds
+        timer_period = 0.001  # seconds
 
         # time.sleep(0.1)
         self.timer = self.create_timer(timer_period, self.turtle_control)
@@ -36,11 +36,11 @@ class VelocityPublisher(Node):
 
 
     	lin_const=3
-    	ang_const=5
+    	ang_const=pi/2
 
     	with Input(keynames='curtsies') as input_generator:
 
-    		e=input_generator.send(0.01)
+    		e=input_generator.send(0.1)
     		e=str(e)
     		self.set_velocity(0, 0)
     		if(e==forward):
