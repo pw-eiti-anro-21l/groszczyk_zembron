@@ -34,22 +34,26 @@ class VelocityPublisher(Node):
     	left= self.get_parameter('left').get_parameter_value().string_value
     	right= self.get_parameter('right').get_parameter_value().string_value
 
+
+    	lin_const=3
+    	ang_const=5
+
     	with Input(keynames='curtsies') as input_generator:
 
     		e=input_generator.send(0.01)
     		e=str(e)
     		self.set_velocity(0, 0)
     		if(e==forward):
-    			self.set_velocity(3, 0)
+    			self.set_velocity(lin_const, 0)
 
     		elif(e==back):
-    			self.set_velocity(-3, 0)
+    			self.set_velocity(-lin_const, 0)
 
     		elif(e==left):
-    			self.set_velocity(0, 3)
+    			self.set_velocity(0, ang_const)
 
     		elif(e==right):
-    			self.set_velocity(0, -3)
+    			self.set_velocity(0, -ang_const)
 
     		msg= Twist()
     		msg.linear.x= self.linear
