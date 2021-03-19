@@ -1,34 +1,21 @@
 import rclpy
 from rclpy.node import Node
-<<<<<<< HEAD
 
-from geometry_msgs.msg import Twist
-from turtlesim.msg  import Pose
-import turtlesim
-from curtsies import Input
-
-=======
 from geometry_msgs.msg import Twist
 from curtsies import Input
 from math import pi
-import time
->>>>>>> 5ebca4a18e3eddc1a24acf0601accaa01b3d403d
+
 
 class VelocityPublisher(Node):
 
     def __init__(self):
         super().__init__('velocity_publisher')
-<<<<<<< HEAD
+
 
         self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
-        timer_period = 0.5  # seconds
-        
-=======
-        self.publisher_ = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
-        timer_period = 0.001  # seconds
+        timer_period = 0.01  # seconds
 
         # time.sleep(0.1)
->>>>>>> 5ebca4a18e3eddc1a24acf0601accaa01b3d403d
         self.timer = self.create_timer(timer_period, self.turtle_control)
 
         self.declare_parameter('forward', 'w')
@@ -36,15 +23,10 @@ class VelocityPublisher(Node):
         self.declare_parameter('left', 'a')
         self.declare_parameter('right', 'd')
 
-<<<<<<< HEAD
-        self.linear= 0
-        self.angular= 0
-=======
         self.get_logger().info("Walcome! \n Default settings: |  FORWARD: W  |  BACK: X  | LEFT:  A|  RIGHT:  D  |")
 
         self.linear= 0.0
         self.angular= 0.0
->>>>>>> 5ebca4a18e3eddc1a24acf0601accaa01b3d403d
 
     def set_velocity(self, lin, ang):
     	self.linear= float(lin)
@@ -57,43 +39,6 @@ class VelocityPublisher(Node):
     	left= self.get_parameter('left').get_parameter_value().string_value
     	right= self.get_parameter('right').get_parameter_value().string_value
 
-
-<<<<<<< HEAD
-    	with Input(keynames='curtsies') as input_generator:
-    		#e=input_generator.send(0.1)
-    		for e in Input():
-    			e=str(e)
-	    		if(e==forward): 
-	    			print('do przodu')
-	    			self.set_velocity(1, 0)
-
-	    		elif(e==back):
-	    			print('do tylu')
-	    			self.set_velocity(-1, 0)
-
-	    		elif(e==left):
-	    			print('w lewo')
-	    			self.set_velocity(0, 1)
-
-	    		elif(e==right):
-	    			print('w prawo')
-	    			self.set_velocity(0, -1)
-
-	    		msg= Twist()
-	    		msg.linear.x= self.linear
-	    		msg.angular.z= self.angular
-	    		self.publisher_.publish(msg)
-
-
-
-
-
-
-				
-
-
-...  
-=======
     	lin_const=3
     	ang_const=pi/2
 
@@ -120,8 +65,6 @@ class VelocityPublisher(Node):
     		self.publisher_.publish(msg)
 
 
-
->>>>>>> 5ebca4a18e3eddc1a24acf0601accaa01b3d403d
 def main(args=None):
     rclpy.init(args=args)
 
