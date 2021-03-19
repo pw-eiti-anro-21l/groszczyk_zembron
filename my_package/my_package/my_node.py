@@ -20,6 +20,8 @@ class VelocityPublisher(Node):
         self.declare_parameter('left', 'a')
         self.declare_parameter('right', 'd')
 
+        self.get_logger().info("Walcome! \n Default settings: |  FORWARD: W  |  BACK: X  | LEFT:  A|  RIGHT:  D  |")
+
         self.linear= 0.0
         self.angular= 0.0
 
@@ -40,7 +42,7 @@ class VelocityPublisher(Node):
 
     	with Input(keynames='curtsies') as input_generator:
 
-    		e=input_generator.send(0.01)
+    		e=input_generator.send(0.1)
     		e=str(e)
     		self.set_velocity(0, 0)
     		if(e==forward):
@@ -78,4 +80,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
