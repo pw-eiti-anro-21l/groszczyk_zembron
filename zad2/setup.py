@@ -15,7 +15,8 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name), glob('launch/*.py')),
         (os.path.join('share', package_name), glob('urdf/*')),
-        (os.path.join('share', package_name), glob('zad2/*.py'))
+        (os.path.join('share', package_name), glob('zad2/*.py')),
+        (os.path.join('share', package_name), glob('zad2/*.txt'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,7 +27,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'state_publisher = zad2.state_publisher:main'
+            'state_publisher = zad2.state_publisher:main',
+            'no_kdl = zad2.nokdl_dkin:main'
+
         ],
     },
 )

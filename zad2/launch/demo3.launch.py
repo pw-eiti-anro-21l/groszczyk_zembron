@@ -37,11 +37,13 @@ def generate_launch_description():
                 'use_sim_time': use_sim_time,
                 'robot_description': Command(['xacro', ' ', urdf])
             }]),
-        # Node(
-        #     package='zad2',
-        #     executable='state_publisher',
-        #     name='state_publisher',
-        #     output='screen'),
+        Node(
+            package='joint_state_publisher_gui',
+            executable='joint_state_publisher_gui',
+            name='joint_state_publisher_gui',
+            output = 'screen'),
+
+
         Node(
             package='rviz2',
             executable='rviz2',

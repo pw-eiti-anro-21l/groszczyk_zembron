@@ -2,20 +2,14 @@ import rclpy
 from rclpy.node import Node
 import numpy
 from sensor_msgs.msg import JointState
-
 from rclpy.clock import ROSClock
-
 import os
 import mathutils
-
 from rclpy.qos import QoSProfile
 from ament_index_python.packages import get_package_share_directory
 from geometry_msgs.msg import Quaternion
-from sensor_msgs.msg import JointState
 from geometry_msgs.msg import PoseStamped
 from tf2_ros import TransformBroadcaster, TransformStamped
-
-from rclpy.clock import ROSClock
 import time
 
 base_y=0.2
@@ -30,7 +24,6 @@ data=[['r1'], ['r2'], ['r3']]
 class No_KDL(Node):
     def __init__(self):
         super().__init__('no_kdl')
-        # self.DH = readParameters('parametryDH.txt'),
         self.subscription = self.create_subscription(
         JointState,
         'joint_states',
@@ -67,21 +60,18 @@ class No_KDL(Node):
 
 def readParameters(plik):
     i=0
-    if os.path.isfile(plik):
-        with open(plik, "r") as f:
-            x_ssafnlskjdf =1
+    # if os.path.isfile(plik):
+    with open(os.path.join(get_package_share_directory('zad2'),plik), 'r') as f:
+        for line in f:
+            line = line.strip('\n')
+            line=line.split(" ")
+            data[i].append(line)
+            i+=1
 
-            for line in f:
-                line = line.strip('\n')
-                line=line.split(" ")
-                data[i].append(line)
-                i+=1
+    f.close()
 
-        f.close()
-        return data
-
-    else:
-    	print("Blad odczytu danych!")
+    # else:
+    # 	print("Blad odczytu danych!")
 
 def calculate(msg):
     i=0
@@ -93,12 +83,12 @@ def calculate(msg):
         box_x= float(element_param[i][0])
         box_y= float(element_param[i][1])
         box_z= float(element_param[i][2])
-    
+
         a=float(dat[1][0])
         d=float(dat[1][1])
         if i==0:
         	d=float(dat[1][1]) + box_z+ base_y+float(element_param[i+1][2])/2
-        	#sztuczne przesuniecie o dlugosc elementow tak zeby joint 1 i join2 
+        	#sztuczne przesuniecie o dlugosc elementow tak zeby joint 1 i join2
         	#nie byly przesuniete wzgledem siebie
 
         alpha=float(dat[1][2])
