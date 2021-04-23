@@ -83,7 +83,9 @@ def euler_to_quaternion(roll, pitch, yaw):
   return Quaternion(x=qx, y=qy, z=qz, w=qw)
 
 def main():
-  node = StatePublisher()
+  pass
+  #node = StatePublisher()
+
 
 if __name__ == '__main__':
   main()

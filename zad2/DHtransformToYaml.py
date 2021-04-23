@@ -23,7 +23,8 @@ def readParameters(plik):
 				line=line.strip('\n') 
 				line=line.split(" ")
 				data[i].append(line)
-				i+=1	
+				i+=1
+		print(data)	
 		f.close()		
 		
 	else:

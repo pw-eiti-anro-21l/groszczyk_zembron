@@ -61,7 +61,7 @@ class No_KDL(Node):
         pose.pose.orientation = Quaternion(w=qua[0], x=qua[1], y=qua[2], z=qua[3])
 
         publisher.publish(pose)
-        self.get_logger().info('Publishing: "%s"' % pose)
+        #self.get_logger().info('Publishing: "%s"' % pose)
 
 
 
@@ -93,19 +93,17 @@ def calculate(msg):
         box_x= float(element_param[i][0])
         box_y= float(element_param[i][1])
         box_z= float(element_param[i][2])
-        #uwzglednienie dlugosci podstawki
-        # if i == 0 :
-        #     box_z += 0.4
-        # if i ==1:
-        #     base_y =  
+    
         a=float(dat[1][0])
-        d=float(dat[1][1]) + box_z/2
+        d=float(dat[1][1])
+        if i==0:
+        	d=float(dat[1][1]) + box_z+ base_y+float(element_param[i+1][2])/2
+        	#sztuczne przesuniecie o dlugosc elementow tak zeby joint 1 i join2 
+        	#nie byly przesuniete wzgledem siebie
+
         alpha=float(dat[1][2])
         #wykomentowalem poniewaz strasznie szalalo przy sczytywaniu poprawki z msg
-        theta=float(dat[1][3])#+float(msg.position[i])
-
-
-
+        theta=float(dat[1][3])+float(msg.position[i])
         trans_z= mathutils.Matrix.Translation((0, 0, d))
         rot_z = mathutils.Matrix.Rotation(theta, 4, 'Z')
         trans_x = mathutils.Matrix.Translation((a, 0, 0))
@@ -116,7 +114,14 @@ def calculate(msg):
         M.append(m)
         i+=1
 
-    M_M = M[0] @ M[1]#@ M[2]
+    trans_z= mathutils.Matrix.Translation((0, 0, 0))
+    rot_z = mathutils.Matrix.Rotation(0, 4, 'Z')
+    trans_x = mathutils.Matrix.Translation((a/2, 0, 0))
+    rot_x =mathutils.Matrix.Rotation(0,4,  'X')
+    m =trans_x @ rot_x @ rot_z@trans_z
+
+
+    M_M = M[0] @M[1]@ M[2]@m
     return M_M
 
 
