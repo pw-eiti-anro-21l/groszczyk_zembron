@@ -40,12 +40,13 @@ class KDL_dkin(Node):
         readParameters('parametryDH.txt')
         calculate(msg)
 
-        joint = JntArray(3)
+        joint = JntArray(5)
         joint[0]= msg.position[0]
         joint[1] = msg.position[1]
-        joint[2] = msg.position[2]
-        print(RPY[0][0],RPY[0][1],RPY[0][2])
-        print("######")
+        joint[2] = 0.0
+        joint[3]= msg.position[2]
+        joint[4] = 0.0
+
 
 
 
@@ -57,22 +58,36 @@ class KDL_dkin(Node):
         chain.addSegment(segment1)
 
 
-        link_1__link_2 = Joint(Joint.RotZ)
+        link_1__link_2 = Joint(Joint.RotY)
         frame2 = Frame(Rotation.RPY(RPY[1][0],RPY[1][1],RPY[1][2]),Vector(XYZ[1][0],XYZ[1][1],XYZ[1][2]))
         segment2=Segment(link_1__link_2,frame2)
         chain.addSegment(segment2)
 
+        link_pusty = Joint(Joint.RotZ)
+        frame_pusty = Frame(Rotation.RPY(0,0,0),Vector(XYZ[2][0],0, 0))
+        segment_pusty=Segment(link_pusty, frame_pusty)
+        chain.addSegment(segment_pusty)
+
 
         link_2__link_3 = Joint(Joint.RotZ)
-        frame3 = Frame(Rotation.RPY(RPY[2][0],RPY[2][1],RPY[2][2]),Vector(XYZ[2][0],XYZ[2][1],XYZ[2][2]))
+        frame3 = Frame(Rotation.RPY(RPY[2][0],RPY[2][1],RPY[2][2]),Vector(0,XYZ[2][1],XYZ[2][2]))
         segment3=Segment(link_2__link_3,frame3)
         chain.addSegment(segment3)
+
+
+        link_tool = Joint(Joint.RotZ)
+        frame4 = Frame(Rotation.RPY(RPY[3][0],RPY[3][1],RPY[3][2]),Vector(XYZ[3][0],XYZ[3][1],XYZ[3][2]))
+        segment4=Segment(link_tool,frame4)
+        chain.addSegment(segment4)
+
+
+
+
+
 
         fk=ChainFkSolverPos_recursive(chain)
         finalFrame=Frame()
         fk.JntToCart(joint,finalFrame)
-        # print(finalFrame)
-        # print("######")
 
         qua = finalFrame.M.GetQuaternion()
 
@@ -92,7 +107,7 @@ class KDL_dkin(Node):
         pose.pose.position.x = xyz[0]
         pose.pose.position.y = xyz[1]
         pose.pose.position.z = xyz[2]
-        pose.pose.orientation = Quaternion(w=qua[0], x=qua[1], y=qua[2], z=qua[3])
+        pose.pose.orientation = Quaternion(w=qua[3], x=qua[0], y=qua[1], z=qua[2])
 
         publisher.publish(pose)
         #self.get_logger().info('Publishing: "%s"' % pose)
@@ -122,7 +137,8 @@ def calculate(msg):
 
         alpha=float(dat[1][2])
         #wykomentowalem poniewaz strasznie szalalo przy sczytywaniu poprawki z msg
-        theta=float(dat[1][3])+float(msg.position[i])
+
+        theta=float(dat[1][3])
         trans_z= mathutils.Matrix.Translation((0, 0, d))
         rot_z = mathutils.Matrix.Rotation(theta, 4, 'Z')
         trans_x = mathutils.Matrix.Translation((a, 0, 0))
@@ -130,6 +146,9 @@ def calculate(msg):
         m =trans_x @ rot_x @ rot_z@trans_z
         rpy = m.to_euler()
         xyz = m.to_translation()
+        rpy[0]=rpy[0]
+        rpy[1]=rpy[1]
+        rpy[2]=rpy[2]
         rpy_list.append(rpy)
         xyz_list.append(xyz)
 
@@ -166,33 +185,6 @@ def readParameters(plik):
     # else:
     # 	print("Blad odczytu danych!")
 
-def readYAMLfile():
-
-
-	with open(os.path.join(
-		get_package_share_directory('zad2'),'urdf_parameters.yaml'), 'r') as file:
-
-		data = yaml.load(file, Loader=yaml.FullLoader)
-
-	my_data=[]
-
-	joint1_RPY = data['row1']['j_rpy']
-	joint1_Vector = data['row1']['j_xyz']
-	joint2_RPY = data['row2']['j_rpy']
-	joint2_Vector = data['row2']['j_xyz']
-	joint3_RPY = data['row3']['j_rpy']
-	joint3_Vector = data['row3']['j_xyz']
-
-	my_data.extend((joint1_RPY,joint1_Vector,joint2_RPY,joint2_Vector,joint3_RPY,joint3_Vector))
-
-	values = []
-	for element in my_data:
-		new_element = element.split()
-		list_of_floats = [float(item) for item in new_element]
-		values.append(list_of_floats)
-
-
-	return values
 
 
 

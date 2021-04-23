@@ -93,7 +93,7 @@ def calculate(msg):
 
         alpha=float(dat[1][2])
         #wykomentowalem poniewaz strasznie szalalo przy sczytywaniu poprawki z msg
-        theta=float(dat[1][3])+float(msg.position[i])
+        theta=float(dat[1][3])#+float(msg.position[i])
         trans_z= mathutils.Matrix.Translation((0, 0, d))
         rot_z = mathutils.Matrix.Rotation(theta, 4, 'Z')
         trans_x = mathutils.Matrix.Translation((a, 0, 0))
