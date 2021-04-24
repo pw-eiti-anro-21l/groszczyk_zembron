@@ -2,7 +2,7 @@
 
 [Wiki laboratorium_nr_2](https://github.com/pw-eiti-anro-21l/groszyk_zembron/wiki/laboratoriumNr2)
 
-[Wiki_laboratorium_nr_3](https://github.com/pw-eiti-anro-21l/groszyk_zembron/wiki/laboratoriumNr3)
+[Wiki laboratorium_nr_3](https://github.com/pw-eiti-anro-21l/groszyk_zembron/wiki/laboratoriumNr3)
 
 Skład zespołu:
 - Mateusz Zembroń
