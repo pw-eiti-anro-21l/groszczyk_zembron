@@ -28,7 +28,8 @@ setup(
     entry_points={
         'console_scripts': [
             'state_publisher = zad2.state_publisher:main',
-            'no_kdl = zad2.nokdl_dkin:main'
+            'no_kdl = zad2.nokdl_dkin:main',
+            'kdl = zad2.kdl_dkin:main'
 
         ],
     },

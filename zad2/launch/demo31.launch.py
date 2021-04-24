@@ -31,5 +31,10 @@ def generate_launch_description():
             package='zad2',
             executable='no_kdl',
             name='no_kdl',
+            ),
+        Node(
+            package='zad2',
+            executable='kdl',
+            name='kdl',
             )
     ])
