@@ -14,39 +14,40 @@ class jint_srv(Node):
         self.srv = self.create_service(RobotInterpolation,'jint_control_srv', self.jint_control_callback)
         qos_profile = QoSProfile(depth=10)
         self.publisher = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
-        self.start_positon = [0,0,0]
+        self.start_position = [0,0,0]
         self.subscriber = self.create_subscription(JointState, 'joint_states',self.listener_callback, 10)
         self.in_action = False
 
     def listener_callback(self, msg):
         #pobieranie aktualnych położeń stawów
         if not self.in_action:
-            self.start_positon[0] = msg.position[0]
-            self.start_positon[1] = msg.position[1]
-            self.start_positon[2] = msg.position[2]
+            self.start_position[0] = msg.position[0]
+            self.start_position[1] = msg.position[1]
+            self.start_position[2] = msg.position[2]
 
     def jint_control_callback(self, request, response ):
         self.in_action = True
         self.linear_interpolation(request)
-        response.server_feedback = "Interpolation completed"
+        response.output = "Interpolation completed"
         self.in_action = False
         return response
 
     def linear_interpolation(self, request):
         time_interval = 0.1
-        number_of_steps = math.floor(total_time/time_interval)
+        number_of_steps = math.floor(request.move_time/time_interval)
         joint_states = JointState()
         joint_states.name = ['joint_base_element1', 'joint_element1_element2', 'joint_element2_element3']
-        start_positon = self.start_positon
+        start_positon = self.start_position
 
-        for i in range(1, steps+1):
-            joint1_current = self.position[0]+((request.joint1_goal - self.start_position[0])/total_time)*time_interval*i
-            joint2_current = self.position[1]+((request.joint2_goal - self.start_position[1])/total_time)*time_interval*i
-            joint3_current = self.position[2]+((request.joint3_goal - self.start_position[2])/total_time)*time_interval*i
+        for i in range(1, number_of_steps+1):
+            joint1_current = self.start_position[0]+((request.joint1_pose - self.start_position[0])/request.move_time)*time_interval*i
+            joint2_current = self.start_position[1]+((request.joint2_pose - self.start_position[1])/request.move_time)*time_interval*i
+            joint3_current = self.start_position[2]+((request.joint3_pose - self.start_position[2])/request.move_time)*time_interval*i
 
             joint_states.position = [float(joint1_current), float(joint2_current), float(joint3_current)]
+            print(joint_states)
             self.publisher.publish(joint_states)
-            time.sleep(sample_time)
+            time.sleep(time_interval)
 
         self.start_positon = [joint1_current, joint2_current, joint3_current]
 
