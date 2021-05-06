@@ -20,7 +20,7 @@ class jint_client(Node):
             self.req.joint3_pose = float(sys.argv[3])
             self.req.move_time = float(sys.argv[4])
             self.req.interpolation_method = sys.argv[5]
-            self.future = self.client.call_async(self.req)
+            self.future = self.cli.call_async(self.req)
         except ValueError:
             self.get_logger().info('ValueError while passing parameters ')
             self.req.joint1_pose = -1
