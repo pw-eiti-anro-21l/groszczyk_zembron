@@ -29,7 +29,9 @@ setup(
     entry_points={
         'console_scripts': [
                 'no_kdl = zad4.nokdl_dkin:main',
-                'kdl = zad4.kdl_dkin:main'
+                'kdl = zad4.kdl_dkin:main',
+                'interpolation_srv = zad4.jint_srv:main',
+                'interpolation_client = zad4.jint_client:main'
         ],
     },
 )
