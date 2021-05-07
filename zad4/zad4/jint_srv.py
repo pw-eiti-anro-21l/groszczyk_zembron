@@ -27,7 +27,11 @@ class jint_srv(Node):
 
     def jint_control_callback(self, request, response ):
         self.in_action = True
-        self.linear_interpolation(request)
+        if self.req.interpolation_method==lin:
+        	self.linear_interpolation(request)
+        if self.req.interpolation_method==pol:
+        	self.polynomial_interpolation(request)
+
         response.output = "Interpolation completed"
         self.in_action = False
         return response
@@ -49,6 +53,35 @@ class jint_srv(Node):
             self.publisher.publish(joint_states)
             time.sleep(time_interval)
 
+        self.start_positon = [joint1_current, joint2_current, joint3_current]
+
+    def polynomial_interpolation(self,request):
+        time_interval = 0.1
+        number_of_steps = math.floor(request.move_time/time_interval)
+        joint_states = JointState()
+        joint_states.name = ['joint_base_element1', 'joint_element1_element2', 'joint_element2_element3']
+        start_positon = self.start_positionn
+
+        for i in range(1, number_of_steps+1):
+        	if i==1:
+		        a0= [start_position[0], start_position[1], start_position[2]]
+		        a1= 0
+		        a2= [3*(request.joint1_pose - self.start_position[0])/(request.move_time**2),
+		        3*(request.joint2_pose - self.start_position[1])/(request.move_time**2),
+		        3*(request.joint3_pose - self.start_position[2])/(request.move_time**2)
+		        ]
+		        a3= [-2*(request.joint1_pose - self.start_position[0])/(request.move_time**3),
+		        -2*(request.joint2_pose - self.start_position[1])/(request.move_time**3),
+		        -2*(request.joint2_pose - self.start_position[2])/(request.move_time**3),
+		        ]
+	        joint1_current = a0[0]+ a1[0]*(time_interval*i) + a2[0]*((time_interval*i)**2)+ a3[0]*((time_interval*i)**3)
+	        joint2_current = a0[1]+ a1[1]*(time_interval*i) + a2[1]*((time_interval*i)**2)+ a3[1]*((time_interval*i)**3)
+	        joint3_current = a0[2]+ a1[2]*(time_interval*i) + a2[2]*((time_interval*i)**2)+ a3[2]*((time_interval*i)**3)
+
+	        joint_states.position = [float(joint1_current), float(joint2_current), float(joint3_current)]
+	        print(joint_states)
+	        self.publisher.publish(joint_states)
+	        time.sleep(time_interval)
         self.start_positon = [joint1_current, joint2_current, joint3_current]
 
 def main(args=None):
