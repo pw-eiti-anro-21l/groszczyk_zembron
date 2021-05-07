@@ -10,6 +10,9 @@ from zad4_srv.srv import RobotInterpolation
 class jint_srv(Node):
 
     def __init__(self):
+        self.theta1=1
+        self.theta2=1
+        self.theta3=0
         super().__init__('jint_srv')
         self.srv = self.create_service(RobotInterpolation,'jint_control_srv', self.jint_control_callback)
         qos_profile = QoSProfile(depth=10)
@@ -27,10 +30,18 @@ class jint_srv(Node):
 
     def jint_control_callback(self, request, response ):
         self.in_action = True
+        
+
+
         if self.req.interpolation_method==lin:
         	self.linear_interpolation(request)
         if self.req.interpolation_method==pol:
         	self.polynomial_interpolation(request)
+        if self.req.interpolation_method!=lin and self.req.interpolation_method!=pol:
+        	self.linear_interpolation(request)
+        	response.output= "[!!!!!] Invalid interpolation method input. Methon changed to linear interpolation [!!!!!]"
+
+
 
         response.output = "Interpolation completed"
         self.in_action = False
