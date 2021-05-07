@@ -10,9 +10,7 @@ from zad4_srv.srv import RobotInterpolation
 class jint_srv(Node):
 
     def __init__(self):
-        self.theta1=1
-        self.theta2=1
-        self.theta3=0
+        self.theta= [1, 1, 0]
         super().__init__('jint_srv')
         self.srv = self.create_service(RobotInterpolation,'jint_control_srv', self.jint_control_callback)
         qos_profile = QoSProfile(depth=10)
@@ -54,7 +52,7 @@ class jint_srv(Node):
         number_of_steps = math.floor(request.move_time/time_interval)
         joint_states = JointState()
         joint_states.name = ['joint_base_element1', 'joint_element1_element2', 'joint_element2_element3']
-        start_positon = self.start_position
+        start_position = self.start_position
 
         for i in range(1, number_of_steps+1):
             joint1_current = self.start_position[0]+((request.joint1_pose - self.start_position[0])/request.move_time)*time_interval*i
