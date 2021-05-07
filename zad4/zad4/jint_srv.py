@@ -10,9 +10,7 @@ from zad4_srv.srv import RobotInterpolation
 class jint_srv(Node):
 
     def __init__(self):
-        self.theta1=1
-        self.theta2=1
-        self.theta3=0
+        self.theta= [1, 1, 0]
         super().__init__('jint_srv')
         self.srv = self.create_service(RobotInterpolation,'jint_control_srv', self.jint_control_callback)
         qos_profile = QoSProfile(depth=10)
@@ -32,17 +30,14 @@ class jint_srv(Node):
         self.in_action = True
         
 
-
-        if self.req.interpolation_method==lin:
+        if request.interpolation_method=="lin":
         	self.linear_interpolation(request)
-        if self.req.interpolation_method==pol:
+        if request.interpolation_method=="pol":
         	self.polynomial_interpolation(request)
-        if self.req.interpolation_method!=lin and self.req.interpolation_method!=pol:
+        if request.interpolation_method!="lin" and request.interpolation_method!="pol":
         	self.linear_interpolation(request)
-        	response.output= "[!!!!!] Invalid interpolation method input. Methon changed to linear interpolation [!!!!!]"
-
-
-
+        	print("[!!!!!] Invalid interpolation method input. Methon changed to linear interpolation [!!!!!]")
+        
         response.output = "Interpolation completed"
         self.in_action = False
         return response
@@ -52,7 +47,7 @@ class jint_srv(Node):
         number_of_steps = math.floor(request.move_time/time_interval)
         joint_states = JointState()
         joint_states.name = ['joint_base_element1', 'joint_element1_element2', 'joint_element2_element3']
-        start_positon = self.start_position
+        start_position = self.start_position
 
         for i in range(1, number_of_steps+1):
             joint1_current = self.start_position[0]+((request.joint1_pose - self.start_position[0])/request.move_time)*time_interval*i
@@ -71,20 +66,20 @@ class jint_srv(Node):
         number_of_steps = math.floor(request.move_time/time_interval)
         joint_states = JointState()
         joint_states.name = ['joint_base_element1', 'joint_element1_element2', 'joint_element2_element3']
-        start_positon = self.start_positionn
-
+        start_position = self.start_position
+        a0= [start_position[0], start_position[1], start_position[2]]
+        a1= [0, 0, 0]
+        a2= [(3*(request.joint1_pose - self.start_position[0])/(request.move_time**2)),
+        (3*(request.joint2_pose - self.start_position[1])/(request.move_time**2)),
+        (3*(request.joint3_pose - self.start_position[2])/(request.move_time**2))
+        ]
+        a3= [(-2*(request.joint1_pose - self.start_position[0])/(request.move_time**3)),
+        (-2*(request.joint2_pose - self.start_position[1])/(request.move_time**3)),
+        (-2*(request.joint2_pose - self.start_position[2])/(request.move_time**3)),
+        ]
         for i in range(1, number_of_steps+1):
-        	if i==1:
-		        a0= [start_position[0], start_position[1], start_position[2]]
-		        a1= 0
-		        a2= [3*(request.joint1_pose - self.start_position[0])/(request.move_time**2),
-		        3*(request.joint2_pose - self.start_position[1])/(request.move_time**2),
-		        3*(request.joint3_pose - self.start_position[2])/(request.move_time**2)
-		        ]
-		        a3= [-2*(request.joint1_pose - self.start_position[0])/(request.move_time**3),
-		        -2*(request.joint2_pose - self.start_position[1])/(request.move_time**3),
-		        -2*(request.joint2_pose - self.start_position[2])/(request.move_time**3),
-		        ]
+        	
+		        
 	        joint1_current = a0[0]+ a1[0]*(time_interval*i) + a2[0]*((time_interval*i)**2)+ a3[0]*((time_interval*i)**3)
 	        joint2_current = a0[1]+ a1[1]*(time_interval*i) + a2[1]*((time_interval*i)**2)+ a3[1]*((time_interval*i)**3)
 	        joint3_current = a0[2]+ a1[2]*(time_interval*i) + a2[2]*((time_interval*i)**2)+ a3[2]*((time_interval*i)**3)
