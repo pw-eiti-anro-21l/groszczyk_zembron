@@ -9,6 +9,7 @@ from geometry_msgs.msg import PoseStamped
 from visualization_msgs.msg import Marker
 from visualization_msgs.msg import MarkerArray
 from geometry_msgs.msg import Quaternion
+import transforms3d
 
 class oint_srv(Node):
 
@@ -83,7 +84,8 @@ class oint_srv(Node):
 		    	roll_current=self.start_rotation[0]+((request.roll_pose- self.start_rotation[0])/request.move_time)*time_interval*i
 		    	pitch_current=self.start_rotation[1]+((request.pitch_pose- self.start_rotation[1])/request.move_time)*time_interval*i
 		    	yaw_current=self.start_rotation[2]+((request.yaw_pose- self.start_rotation[2])/request.move_time)*time_interval*i
-		    	qua_current = Quaternion(w=0.0, x=roll_current, y=pitch_current, z=yaw_current)
+		    	qua= transforms3d.euler.euler2quat(roll_current, pitch_current, yaw_current, axes='sxyz')
+		    	qua_current = Quaternion(w=0.0, x=qua[0], y=qua[1], z=qua[2])
 		    	# pose.pose.orientation = qua_current
 		    	# marker.pose.orientation = qua_current
 		    	
@@ -170,7 +172,8 @@ class oint_srv(Node):
 				roll_current = a0r[0]+ a1r[0]*(time_interval*i) + a2r[0]*((time_interval*i)**2)+ a3r[0]*((time_interval*i)**3)
 				pitch_current = a0r[1]+ a1r[1]*(time_interval*i) + a2r[1]*((time_interval*i)**2)+ a3r[1]*((time_interval*i)**3)
 				yaw_current = a0r[2]+ a1r[2]*(time_interval*i) + a2r[2]*((time_interval*i)**2)+ a3r[2]*((time_interval*i)**3)
-				qua_current = Quaternion(w=0.0, x=roll_current, y=pitch_current, z=yaw_current)
+				qua= transforms3d.euler.euler2quat(roll_current, pitch_current, yaw_current, axes='sxyz')
+				qua_current = Quaternion(w=0.0, x=qua[0], y=qua[1], z=qua[2])
 
 			pose.header.frame_id = "base_link"
 			pose.pose.position.x = x_current
