@@ -33,6 +33,7 @@ setup(
                 'interpolation_srv = zad4.jint_srv:main',
                 'interpolation_client = zad4.jint_client:main',
                 'oint_interpolation_client = zad4.oint_client:main',
+                'oint_interpolation_srv = zad4.oint_srv:main',
         ],
     },
 )

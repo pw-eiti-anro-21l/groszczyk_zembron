@@ -27,7 +27,7 @@ class jint_client(Node):
             self.req.joint1_pose = -1
             self.req.joint2_pose = -1
             self.req.joint3_pose = -1
-            self.req.move_time = f-1
+            self.req.move_time = -1
             self.req.interpolation_method = sys.argv[5]
             self.future = self.client.call_async(self.req)
 
