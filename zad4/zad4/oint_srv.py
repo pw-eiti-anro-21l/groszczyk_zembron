@@ -31,8 +31,10 @@ class oint_srv(Node):
 			else:
 				self.linear_interpolation(request)
 				response.output= "[!!!!!] Invalid interpolation method input. Methon changed to linear interpolation [!!!!!]"
+			response.output = "Interpolation completed"
 		else:
 			self.get_logger().info('Time must be positive!!')
+
 		return response
 
 
