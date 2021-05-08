@@ -84,9 +84,8 @@ class oint_srv(Node):
 		    	pitch_current=self.start_rotation[1]+((request.pitch_pose- self.start_rotation[1])/request.move_time)*time_interval*i
 		    	yaw_current=self.start_rotation[2]+((request.yaw_pose- self.start_rotation[2])/request.move_time)*time_interval*i
 		    	qua_current = Quaternion(w=0.0, x=roll_current, y=pitch_current, z=yaw_current)
-		    	pose.pose.orientation = qua_current
-		    	marker.pose.orientation = qua_current
-		    	print("!!!!!!!!!!!!")
+		    	# pose.pose.orientation = qua_current
+		    	# marker.pose.orientation = qua_current
 		    	
 
 
@@ -94,14 +93,17 @@ class oint_srv(Node):
 		    pose.pose.position.x = x_current
 		    pose.pose.position.y = y_current
 		    pose.pose.position.z = z_current
-		   
-		    
+		    if request.interpolation_method=="lin_extended":
+		    	pose.pose.orientation = qua_current
+
 		    self.publisher.publish(pose)
 
 
 		    marker.pose.position.x = x_current
 		    marker.pose.position.y = y_current
 		    marker.pose.position.z = z_current
+		    if request.interpolation_method=="lin_extended":
+		    	marker.pose.orientation = qua_current
 		    
 		    marker_array.markers.append(marker)
 		    id=0
@@ -118,7 +120,86 @@ class oint_srv(Node):
 		
 
 	def polynomial_interpolation(self, request):
-		pass
+		time_interval = 0.1
+		number_of_steps = math.floor(request.move_time/time_interval)
+		pose = PoseStamped()
+		marker = Marker()
+		marker_array = MarkerArray()
+		marker.scale.x = 0.1
+		marker.scale.y = 0.1
+		marker.scale.z = 0.1
+		marker.color.a = 1.0
+		marker.color.r = 1.0
+		marker.color.g = 1.0
+		marker.color.b = 1.0
+		marker.type = 1
+		marker.action = 0
+		marker.header.frame_id = "/base_link"
+
+		a0= [self.start_position[0], self.start_position[1], self.start_position[2]]
+		a1= [0,0,0]
+		a2= [3*(request.x_pose - self.start_position[0])/(request.move_time**2),
+		3*(request.y_pose - self.start_position[1])/(request.move_time**2),
+		3*(request.z_pose - self.start_position[2])/(request.move_time**2)
+		]
+		a3= [-2*(request.x_pose - self.start_position[0])/(request.move_time**3),
+		-2*(request.y_pose - self.start_position[1])/(request.move_time**3),
+		-2*(request.z_pose - self.start_position[2])/(request.move_time**3),
+		]
+
+		if request.interpolation_method=="pol_extended":
+			a0r= [self.start_rotation[0], self.start_rotation[1], self.start_rotation[2]]
+			a1r= [0,0,0]
+			a2r= [3*(request.roll_pose - self.start_rotation[0])/(request.move_time**2),
+			3*(request.pitch_pose - self.start_rotation[1])/(request.move_time**2),
+			3*(request.yaw_pose - self.start_rotation[2])/(request.move_time**2)
+			]
+			a3r= [-2*(request.roll_pose - self.start_rotation[0])/(request.move_time**3),
+			-2*(request.pitch_pose - self.start_rotation[1])/(request.move_time**3),
+			-2*(request.yaw_pose - self.start_rotation[2])/(request.move_time**3),
+			]
+
+
+		for i in range(1, number_of_steps+1):
+			x_current = a0[0]+ a1[0]*(time_interval*i) + a2[0]*((time_interval*i)**2)+ a3[0]*((time_interval*i)**3)
+			y_current = a0[1]+ a1[1]*(time_interval*i) + a2[1]*((time_interval*i)**2)+ a3[1]*((time_interval*i)**3)
+			z_current = a0[2]+ a1[2]*(time_interval*i) + a2[2]*((time_interval*i)**2)+ a3[2]*((time_interval*i)**3)
+
+
+			if request.interpolation_method=="pol_extended":
+				roll_current = a0r[0]+ a1r[0]*(time_interval*i) + a2r[0]*((time_interval*i)**2)+ a3r[0]*((time_interval*i)**3)
+				pitch_current = a0r[1]+ a1r[1]*(time_interval*i) + a2r[1]*((time_interval*i)**2)+ a3r[1]*((time_interval*i)**3)
+				yaw_current = a0r[2]+ a1r[2]*(time_interval*i) + a2r[2]*((time_interval*i)**2)+ a3r[2]*((time_interval*i)**3)
+				qua_current = Quaternion(w=0.0, x=roll_current, y=pitch_current, z=yaw_current)
+
+			pose.header.frame_id = "base_link"
+			pose.pose.position.x = x_current
+			pose.pose.position.y = y_current
+			pose.pose.position.z = z_current
+			if request.interpolation_method=="pol_extended":
+				pose.pose.orientation = qua_current
+
+			self.publisher.publish(pose)
+
+
+			marker.pose.position.x = x_current
+			marker.pose.position.y = y_current
+			marker.pose.position.z = z_current
+			if request.interpolation_method=="pol_extended":
+				marker.pose.orientation = qua_current
+
+			marker_array.markers.append(marker)
+			id=0
+			for marker in marker_array.markers:
+			    marker.id = id
+			    id += 1
+			self.marker_publisher.publish(marker_array)
+
+			time.sleep(time_interval)
+
+		self.start_position=[x_current, y_current, z_current]
+		if request.interpolation_method=="pol_extended":
+			self.start_rotation=[roll_current, pitch_current, yaw_current]
 
 
 
