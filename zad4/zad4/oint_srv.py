@@ -179,7 +179,7 @@ class oint_srv(Node):
 				pitch_current = a0r[1]+ a1r[1]*(time_interval*i) + a2r[1]*((time_interval*i)**2)+ a3r[1]*((time_interval*i)**3)
 				yaw_current = a0r[2]+ a1r[2]*(time_interval*i) + a2r[2]*((time_interval*i)**2)+ a3r[2]*((time_interval*i)**3)
 				qua= transforms3d.euler.euler2quat(roll_current, pitch_current, yaw_current, axes='sxyz')
-				qua_current = Quaternion(w=0.0, x=qua[0], y=qua[1], z=qua[2])
+				qua_current = Quaternion(w=qua[0], x=qua[1], y=qua[2], z=qua[3])
 				plot_x.append(qua[0])
 				plot_y.append(qua[1])
 				plot_z.append(qua[2])
