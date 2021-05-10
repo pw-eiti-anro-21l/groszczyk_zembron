@@ -16,15 +16,7 @@ class jint_srv(Node):
         qos_profile = QoSProfile(depth=10)
         self.publisher = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
         self.start_position = [0,0,0]
-        self.subscriber = self.create_subscription(JointState, 'joint_states',self.listener_callback, 10)
         self.in_action = False
-
-    def listener_callback(self, msg):
-        #pobieranie aktualnych położeń stawów
-        if not self.in_action:
-            self.start_position[0] = msg.position[0]
-            self.start_position[1] = msg.position[1]
-            self.start_position[2] = msg.position[2]
 
     def jint_control_callback(self, request, response ):
         self.in_action = True
