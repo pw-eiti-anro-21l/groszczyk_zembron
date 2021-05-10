@@ -55,7 +55,7 @@ class jint_srv(Node):
             self.publisher.publish(joint_states)
             time.sleep(time_interval)
 
-        self.start_positon = [joint1_current, joint2_current, joint3_current]
+        self.start_position = [joint1_current, joint2_current, joint3_current]
 
     def polynomial_interpolation(self,request):
         time_interval = 0.1
@@ -80,7 +80,7 @@ class jint_srv(Node):
             joint_states.position = [float(joint1_current), float(joint2_current), float(joint3_current)]
             self.publisher.publish(joint_states)
             time.sleep(time_interval)
-        self.start_positon = [joint1_current, joint2_current, joint3_current]
+        self.start_position = [joint1_current, joint2_current, joint3_current]
 
 def main(args=None):
     rclpy.init(args=args)

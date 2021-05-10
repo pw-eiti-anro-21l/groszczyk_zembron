@@ -9,6 +9,7 @@ class jint_client(Node):
     def __init__(self):
         super().__init__('jint')
 
+        self.start_position = [0,0,0]
         self.cli = self.create_client(RobotInterpolation, 'jint_control_srv')
         while not self.cli.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('service not available, waiting again...')
