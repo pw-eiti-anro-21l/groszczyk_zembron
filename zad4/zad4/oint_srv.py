@@ -111,12 +111,12 @@ class oint_srv(Node):
 
 			time.sleep(time_interval)
 
-		plt.plot(plot_time, plot_x, label= 'kwaternion x')
-		plt.plot(plot_time, plot_y, label = 'kwaternion y')
-		plt.plot(plot_time, plot_z, label = 'kwaternion z')
-		plt.xlabel("czas")
-		plt.legend()
-		plt.show()
+		# plt.plot(plot_time, plot_x, label= 'kwaternion x')
+		# plt.plot(plot_time, plot_y, label = 'kwaternion y')
+		# plt.plot(plot_time, plot_z, label = 'kwaternion z')
+		# plt.xlabel("czas")
+		# plt.legend()
+		# plt.show()
 
 		self.start_position=[x_current, y_current, z_current]
 		if request.interpolation_method=="lin_extended":
@@ -213,12 +213,12 @@ class oint_srv(Node):
 		self.start_position=[x_current, y_current, z_current]
 		if request.interpolation_method=="pol_extended":
 			self.start_rotation=[roll_current, pitch_current, yaw_current]
-		plt.plot(plot_time, plot_x, label= 'kwaternion x')
-		plt.plot(plot_time, plot_y, label = 'kwaternion y')
-		plt.plot(plot_time, plot_z, label = 'kwaternion z')
-		plt.xlabel("czas")
-		plt.legend()
-		plt.show()
+		# plt.plot(plot_time, plot_x, label= 'kwaternion x')
+		# plt.plot(plot_time, plot_y, label = 'kwaternion y')
+		# plt.plot(plot_time, plot_z, label = 'kwaternion z')
+		# plt.xlabel("czas")
+		# plt.legend()
+		# plt.show()
 
 
 

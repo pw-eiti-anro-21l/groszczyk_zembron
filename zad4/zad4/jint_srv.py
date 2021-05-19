@@ -87,7 +87,7 @@ def main(args=None):
     jint_node = jint_srv()
 
     rclpy.spin(jint_node)
-
+    
     rclpy.shutdown()
 
 if __name__ == '__main__':
