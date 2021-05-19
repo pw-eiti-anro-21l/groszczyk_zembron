@@ -34,7 +34,7 @@ class ikin(Node):
 
 		#self.subscription #prevent unused variable waring
 		qos_profile = QoSProfile(depth=10)
-		self.publisher = self.create_publisher(JointState, '/joint_states', qos_profile)
+		self.publisher = self.create_publisher(JointState, 'joint_interpolate', qos_profile)
 
 		
 
@@ -57,6 +57,7 @@ class ikin(Node):
 		joint_states = JointState()
 		joint_states.name = ['joint_base_element1', 'joint_element1_element2', 'joint_element2_element3']
 		joint_states.position=[float(theta[0]), float(theta[1]), float(theta[2])]
+
 		self.publisher.publish(joint_states)
 		self.get_logger().info(str(theta))
 		time.sleep(time_interval)
@@ -117,9 +118,9 @@ class ikin(Node):
 		T= T1 @ T2 @ T3@ T4
 
 		f=np.zeros(3)
-		f[0]= T[0][3] # -x chyba
-		f[1]= T[1][3]
-		f[2]= T[2][3]
+		f[0]= T[0][3] -self.position_x
+		f[1]= T[1][3] -self.position_y
+		f[2]= T[2][3] -self.position_z+ self.sphere_center[2]
 
 		return f
 
