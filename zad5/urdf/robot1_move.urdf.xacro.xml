@@ -1,0 +1,129 @@
+<robot name="robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="l_width" value="2" />
+<xacro:property name="params" value="${load_yaml('UrdfParameters.yaml')}"/>
+
+	<link name="base_link">
+		<visual>
+			<origin xyz="0 0 0.1" rpy="0 0 0"/>
+			<geometry>
+				<box size="0.2 0.2 0.2"/>
+			</geometry>
+			<material name="Cyan1">
+				<color rgba="0 0.9 0.9 1.0"/>
+			</material>
+		</visual>
+	</link>
+
+ 	<link name="element1">
+		<visual>
+		    <origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="${params['r1']['size']}"/>
+			</geometry>
+			<material name="blue">
+	       		<color rgba="0 0 1 1"/>
+	     	</material>
+		</visual>
+	</link>
+
+	<joint name="joint_base_element1" type="revolute">
+      <parent link="base_link"/>
+    	<child link="element1"/>
+    	<origin xyz="${params['r1']['xyz']}" rpy="${params['r1']['rpy']}"/>
+    	<axis xyz="0 0 1"/>
+    	<limit lower="-3.1416" upper="3.1416" effort="10" velocity="3"/>
+	</joint>
+
+
+	 <link name="element2">
+		<visual>
+		    <origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="${params['r2']['size']}"/>
+			</geometry>
+			<material name="green">
+				<color rgba="0 1 0 1"/>
+	     	</material>
+		</visual>
+	</link>
+
+	<joint name="joint_element1_element2" type="revolute">
+      <parent link="element1"/>
+    	<child link="element2"/>
+    	<origin xyz="${params['r2']['xyz']}" rpy="${params['r2']['rpy']}"/>
+
+    	<limit lower="${params['limit']['lower']}" upper="${params['limit']['uper']}" effort="10" velocity="3"/>
+      <axis xyz="0 0 1 "/>
+	</joint>
+
+	<link name="element3">
+		<visual>
+		    <origin xyz="0 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="${params['r3']['size']}"/>
+			</geometry>
+			<material name="red">
+				<color rgba="1 0 0 1"/>
+	     	</material>
+		</visual>
+	</link>
+
+	<link name="element4">
+		<visual>
+		    <origin xyz="${params['r4']['element_xyz']}" rpy="0 0 0"/>
+			<geometry>
+				<box size="${params['r4']['size']}"/>
+			</geometry>
+			<material name="sra">
+				<color rgba="1 1 1 1"/>
+	     	</material>
+		</visual>
+	</link>
+
+	<joint name="joint_element2_element3" type="revolute">
+      <parent link="element2"/>
+    	<child link="element3"/>
+    	<origin xyz="${params['r3']['xyz']}" rpy="${params['r3']['rpy']}"/>
+
+    	<limit lower="-3.14" upper="3.14" effort="10" velocity="3"/>
+      <axis xyz="0 0 1 "/>
+	</joint>
+
+
+	<joint name="joint_element2_element4" type="fixed">
+      <parent link="element2"/>
+    	<child link="element4"/>
+    	<origin xyz="0 0 0" rpy="${params['r4']['rpy']}"/>
+
+    	<limit lower="-1.57" upper="1.57" effort="10" velocity="3"/>
+      <axis xyz="0 0 1 "/>
+	</joint>
+  
+  <link name="tool">
+		<visual>
+		    <origin xyz="-0.9 0 0" rpy="0 0 0"/>
+			<geometry>
+				<box size="2 0.1 0.1"/>
+			</geometry>
+			<material name="blue">
+	       		<color rgba="0 0 1 1"/>
+	     	</material>
+		</visual>
+	</link>
+  <joint name="joint_element3_tool" type="fixed">
+      <parent link="element3"/>
+      <child link="tool"/>
+      <origin xyz="2 0 0" rpy="0 0 0"/>
+
+      <limit lower="-1.57" upper="1.57" effort="10" velocity="3"/>
+      <axis xyz="0 0 1 "/>
+  </joint>
+
+
+
+
+
+
+
+
+</robot>
