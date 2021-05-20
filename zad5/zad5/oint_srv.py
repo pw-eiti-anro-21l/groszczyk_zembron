@@ -11,7 +11,7 @@ from visualization_msgs.msg import MarkerArray
 from geometry_msgs.msg import Quaternion
 import transforms3d
 import matplotlib.pyplot as plt
-
+from math import sin, cos, pi
 
 base_y=0.2
 element1_param=[0.2, 0.2, 1.6]
@@ -42,6 +42,8 @@ class oint_srv(Node):
 				self.polynomial_interpolation(request)
 			elif request.interpolation_method=="rectangle":
 				self.rectangle_interpolation(request)
+			elif request.interpolation_method=="ellipse":
+				self.ellipse_interpolation(request)
 			else:
 				self.linear_interpolation(request)
 				response.output= "[!!!!!] Invalid interpolation method input. Methon changed to linear interpolation [!!!!!]"
@@ -123,10 +125,6 @@ class oint_srv(Node):
 		marker.type = 1
 		marker.action = 0
 		marker.header.frame_id = "/base_link"
-		plot_x = []
-		plot_y = []
-		plot_z = []
-		plot_time = []
 
 		a0= [self.start_position[0], self.start_position[1], self.start_position[2]]
 		a1= [0,0,0]
@@ -147,29 +145,92 @@ class oint_srv(Node):
 			z_current = a0[2]+ a1[2]*(time_interval*i) + a2[2]*((time_interval*i)**2)+ a3[2]*((time_interval*i)**3)
 
 
+			if self.point_in_sphere(x_current, y_current, z_current):
+				pose.header.frame_id = "base_link"
+				pose.pose.position.x = x_current
+				pose.pose.position.y = y_current
+				pose.pose.position.z = z_current
+
+				self.publisher.publish(pose)
+
+
+				marker.pose.position.x = x_current
+				marker.pose.position.y = y_current
+				marker.pose.position.z = z_current
+
+				marker_array.markers.append(marker)
+				id=0
+				for marker in marker_array.markers:
+				    marker.id = id
+				    id += 1
+				self.marker_publisher.publish(marker_array)
+
+				time.sleep(time_interval)
+				self.start_position=[x_current, y_current, z_current]
+			else:
+				self.get_logger().info("Dany punkt jest nieosiągalny")
+		
+
+	def interpolate_ellipse(self, request):
+		time_interval = 0.1
+		number_of_steps = math.floor(request.move_time/time_interval)
+		pose = PoseStamped()
+		marker = Marker()
+		marker_array = MarkerArray()
+		marker.scale.x = 0.1
+		marker.scale.y = 0.1
+		marker.scale.z = 0.1
+		marker.color.a = 1.0
+		marker.color.r = 0.0
+		marker.color.g = 1.0
+		marker.color.b = 0.0
+		marker.type = 1
+		marker.action = 0
+		marker.header.frame_id = "/base_link"
+
+		x_current=self.start_position[0]
+		start_position=self.start_position
+
+		a= request.a
+		b= request.b
+
+		request.y_pose=start_position[1]+ a*cos(2*pi/number_of_steps)
+		request.z_pose=start_position[2]+ b*sin(2*pi/number_of_steps)
+		self.linear_interpolation(request)
+		
+		for i in range(1, number_of_steps+1):
+			
+			y_current = start_position[1]+ a*cos(2*pi*i/number_of_steps)
+			z_current = start_position[2]+ b*sin(2*pi*i/number_of_steps)
+
+
+
 			pose.header.frame_id = "base_link"
 			pose.pose.position.x = x_current
 			pose.pose.position.y = y_current
 			pose.pose.position.z = z_current
 
-			self.publisher.publish(pose)
+			if self.point_in_sphere(x_current, y_current, z_current):
 
+				self.publisher.publish(pose)
 
-			marker.pose.position.x = x_current
-			marker.pose.position.y = y_current
-			marker.pose.position.z = z_current
+				marker.pose.position.x = x_current
+				marker.pose.position.y = y_current
+				marker.pose.position.z = z_current
+			
+				marker_array.markers.append(marker)
+				id=0
+				for marker in marker_array.markers:
+				    marker.id = id
+				    id += 1
+				self.marker_publisher.publish(marker_array)
 
-			marker_array.markers.append(marker)
-			id=0
-			for marker in marker_array.markers:
-			    marker.id = id
-			    id += 1
-			self.marker_publisher.publish(marker_array)
+				time.sleep(time_interval)
+				self.start_position=[x_current, y_current, z_current]
+			else:
+				self.get_logger().info("Dany punkt jest nieosiągalny")
 
-			time.sleep(time_interval)
-
-		self.start_position=[x_current, y_current, z_current]
-
+      
 
 	def point_in_sphere(self, x, y, z):
 		if (x-self.sphere_center[0])**2+(y-self.sphere_center[1])**2+(z-self.sphere_center[2])**2>self.sphere_radius**2:
@@ -190,6 +251,10 @@ class oint_srv(Node):
 		self.linear_interpolation(request)
 		request.x_pose+=request.b
 		self.linear_interpolation(request)
+
+	def ellipse_interpolation(self, request):
+		self.linear_interpolation(request)
+		self.interpolate_ellipse(request)
 
 
 
