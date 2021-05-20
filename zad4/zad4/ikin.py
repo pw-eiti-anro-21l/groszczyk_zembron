@@ -27,7 +27,7 @@ class ikin(Node):
 	def __init__(self):
 		super().__init__('ikin')
 		self.limit=(pi/2)*0.5
-		self.sphere_center=[0, 0, element1_param[2]+base_y]
+		self.sphere_center=[0, 0, element1_param[2]+base_y+0.1]
 		self.sphere_radius=4
 		self.subscription = self.create_subscription(PoseStamped, '/oint_interpolate', self.listener_callback, 10)
 
@@ -71,7 +71,7 @@ class ikin(Node):
 		theta[2]=self.from_minus_pi_to_plus_pi(theta[2])
 
 
-		theta2[0]=float(theta2[0])%(2*pi)
+		theta2[0]=float(theta[0])%(2*pi)
 		theta2[0]=self.from_minus_pi_to_plus_pi(theta2[0])
 
 		theta2[1]=float(theta2[1])%(2*pi)
@@ -79,6 +79,10 @@ class ikin(Node):
 
 		theta2[2]=float(theta[2])%(2*pi)*-1
 		theta2[2]=self.from_minus_pi_to_plus_pi(theta2[2])
+
+		if self.position_x==0 and self.position_y==0:
+			theta[0]=self.previous_joint_values[0]
+			theta2[0]= self.previous_joint_values[1]
 
 		
 		if abs(theta[1]-self.previous_joint_values[1])<=abs(theta2[1]-self.previous_joint_values[1]):
@@ -92,7 +96,7 @@ class ikin(Node):
 		
 
 
-		#time_interval = 0.1
+		
 		
 
 		joint_states = JointState()
@@ -113,7 +117,7 @@ class ikin(Node):
 
 		self.get_logger().info(str(theta)+" "+str(theta2))
 		
-		#time.sleep(time_interval)
+		
 
 
 	def point_in_sphere(self, x, y, z):
@@ -172,7 +176,8 @@ class ikin(Node):
 		return f
 
 	def f2(self, x):
-		theta1= x[0]
+		theta1= self.previous_joint_values[0]
+		p0=x[0]
 		theta2= x[1]
 		p=x[2]
 		theta3= -self.previous_joint_values[2]
@@ -181,7 +186,7 @@ class ikin(Node):
 		T1 = np.array([
 			[cos(theta1), -sin(theta1), 0, 0],
 			[sin(theta1), cos(theta1), 0, 0],
-			[0*p, 0, 1, 0],
+			[0*p, 0*p0, 1, 0],
 			[0, 0, 0, 1]
 			])
 		T2 = np.array([
