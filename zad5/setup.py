@@ -30,7 +30,7 @@ setup(
         'console_scripts': [
                 'oint_interpolation_client = zad5.oint_client:main',
                 'oint_interpolation_srv = zad5.oint_srv:main',
-                'ikin =zad4.ikin:main'
+                'ikin =zad5.ikin:main'
         ],
     },
 )

@@ -26,6 +26,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/RobotInterpolation.srv"
   "srv/OintInterpolation.srv"
+  "srv/RobotInterpolationZad5.srv"
  )
 
 if(BUILD_TESTING)

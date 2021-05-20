@@ -1,0 +1,9 @@
+float64 x_pose
+float64 y_pose
+float64 z_pose
+float64 a
+float64 b
+float64 move_time
+string interpolation_method
+---
+string output
