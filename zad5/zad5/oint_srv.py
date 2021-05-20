@@ -226,10 +226,10 @@ class oint_srv(Node):
 				self.marker_publisher.publish(marker_array)
 
 				time.sleep(time_interval)
-				self.start_position=[x_current, y_current, z_current]
 			else:
-				self.get_logger().info("Dany punkt jest nieosiągalny")
-
+				self.get_logger().info("Zadana trajektoria jest nieosiągalna.")
+				break;
+			self.start_position=[x_current, y_current, z_current]
       
 
 	def point_in_sphere(self, x, y, z):
