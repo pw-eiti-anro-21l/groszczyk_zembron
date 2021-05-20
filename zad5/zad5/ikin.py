@@ -11,6 +11,7 @@ from scipy.optimize import fsolve
 from math import  pi, sin, cos
 import numpy as np
 from sympy import Symbol, solve, sin, cos, Eq, Matrix, nsolve
+import warnings
 
 
 base_y=0.2
@@ -25,6 +26,7 @@ element_param=[element1_param, element2_param, element3_param]
 class ikin(Node):
 	
 	def __init__(self):
+		warnings.filterwarnings('ignore', 'The iteration is not making good progress')
 		super().__init__('ikin')
 		self.limit=(pi/2)*0.5
 		self.sphere_center=[0, 0, element1_param[2]+base_y+0.1]
@@ -83,13 +85,11 @@ class ikin(Node):
 			
 			joint_states.position=[joint1_value, joint2_value, joint3_value]
 
-
 			self.previous_joint_values[0]=joint1_value
 			self.previous_joint_values[1]=joint2_value
 			self.previous_joint_values[2]=joint3_value
 			self.publisher.publish(joint_states)
-
-			self.get_logger().info(str(theta)+" "+str(theta2))
+			
 		else:
 			self.get_logger().info("Zadany punkt jest nieprawidłowy. Ostatni prawidłowy punkt to: "+ str(self.last_corret_position))
 
